@@ -9,7 +9,7 @@ Tudo numa tela só do celular, atualizando sozinho a cada 10 segundos:
   **diferença de votos**.
 - **Presidente por estado:** os 27 estados + exterior em quadradinhos, cada um com % apurado e a
   barra vermelho/azul com a porcentagem de cada candidato e a **diferença de votos** (ES em destaque). Ordena por A–Z,
-  % apurado ou nº de eleitores.
+  % apurado ou nº de eleitores, e filtrar só os estados onde **Lula** ou **Flávio** está à frente.
 
 Todos os números (votos, %, diferença) vêm exatamente dos arquivos oficiais do TSE. As fotos carregam
 separado e nunca atrasam a atualização dos números.

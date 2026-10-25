@@ -74,6 +74,11 @@
   .grade { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 7px; }
   @media (min-width: 560px) { .grade { grid-template-columns: repeat(6, 1fr); } }
   @media (max-width: 330px) { .grade { grid-template-columns: repeat(3, 1fr); } }
+  .filtro { display: flex; gap: 5px; margin-top: 7px; }
+  .filtro button { flex: 1; font: inherit; font-size: 12px; font-weight: 700; padding: 6px 4px; border-radius: 8px;
+    border: 1px solid var(--cor); background: var(--card); color: var(--cor); white-space: nowrap; }
+  .filtro button.sel { background: var(--cor); color: #fff; }
+  .vazio { grid-column: 1 / -1; text-align: center; color: var(--muted); font-size: 12px; padding: 10px 0; }
   .uf { border: 1px solid var(--line); border-radius: 8px; padding: 4px 5px; min-width: 0; }
   .uf.es { border-color: var(--accent); }
   .uf .t { display: flex; justify-content: space-between; align-items: baseline; font-size: 10px; color: var(--muted); }
@@ -129,6 +134,7 @@
     <div class="cab"><span class="t">Por estado <span style="text-transform:none;font-weight:400">+ = dif. votos</span></span>
       <div class="ordem" id="ordem"><button data-o="az" class="sel">A–Z</button><button data-o="apur">%</button><button data-o="eleit">eleit.</button></div>
     </div>
+    <div class="filtro" id="filtro"></div>
     <div class="grade" id="estados"></div>
   </div>
 
@@ -179,6 +185,8 @@
   var paineis = { br: novoPainel(), gov: novoPainel() };
   var estados = {};
   var ordem = "az";
+  var filtro = "todos";   // todos | lula | flavio
+  try { filtro = localStorage.getItem("apuracao-filtro") || "todos"; } catch (e) {}
   var $ = function (id) { return document.getElementById(id); };
 
   function novoPainel() { return { ult: null, ant: {}, ganho: {} }; }
@@ -390,8 +398,28 @@
   }
 
   // ---------------------------------------------------------------- estados
+  // quem lidera no estado: "lula", "flavio" ou "" (sem dados/empate)
+  function quemLidera(d) {
+    var l = d && lider(d.cs);
+    if (!l) return "";
+    var n = norm(l.nome);
+    return /LULA/.test(n) || l.n === "13" ? "lula" : (/FLAVIO|BOLSONARO/.test(n) || l.n === "22" ? "flavio" : "");
+  }
+
+  function renderFiltro(todos) {
+    var cont = { todos: todos.length, lula: 0, flavio: 0 };
+    todos.forEach(function (x) { var q = quemLidera(x.d); if (q) cont[q]++; });
+    $("filtro").innerHTML = [["todos", "Todos", "var(--text)"], ["lula", "Lula à frente", "var(--lula)"], ["flavio", "Flávio à frente", "var(--flavio)"]]
+      .map(function (b) {
+        return '<button data-f="' + b[0] + '" class="' + (filtro === b[0] ? "sel" : "") + '" style="--cor:' + b[2] + '">' +
+          b[1] + " (" + cont[b[0]] + ")</button>";
+      }).join("");
+  }
+
   function renderEstados() {
     var lista = UFS.map(function (u) { return { uf: u[0], nome: u[1], d: estados[u[0]] }; });
+    renderFiltro(lista);
+    if (filtro !== "todos") lista = lista.filter(function (x) { return quemLidera(x.d) === filtro; });
     if (ordem === "apur") lista.sort(function (a, b) { return (b.d ? b.d.pst : -1) - (a.d ? a.d.pst : -1); });
     if (ordem === "eleit") lista.sort(function (a, b) { return (b.d ? b.d.e : -1) - (a.d ? a.d.e : -1); });
     $("estados").innerHTML = lista.map(function (x) {
@@ -403,7 +431,7 @@
       return h + '<div class="split">' + splitBar(d.cs) + '</div><div class="n">' + dois.map(function (c) {
         return '<span class="' + (l === c ? "l" : "") + '" style="color:' + c.cor + '">' + fp(c.pct, 1).replace("%", "") + "</span>";
       }).join("") + '</div><div class="df"' + (l ? ' style="color:' + l.cor + '">+' + fmt(difVotos(d.cs)) : ">&nbsp;") + "</div></div>";
-    }).join("");
+    }).join("") || '<div class="vazio">Nenhum estado nesse filtro.</div>';
   }
 
   function buscarEstados() {
@@ -491,6 +519,14 @@
   });
 
   // ---------------------------------------------------------------- controles
+  $("filtro").onclick = function (ev) {
+    var b = ev.target.closest("button");
+    if (!b) return;
+    filtro = b.getAttribute("data-f");
+    try { localStorage.setItem("apuracao-filtro", filtro); } catch (e) {}
+    renderEstados();
+  };
+
   Array.prototype.forEach.call($("ordem").querySelectorAll("button"), function (b) {
     b.onclick = function () {
       ordem = b.getAttribute("data-o");
