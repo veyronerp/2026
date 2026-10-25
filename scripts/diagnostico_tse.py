@@ -7,48 +7,58 @@ import urllib.error
 import urllib.request
 
 TSE = "https://resultados.tse.jus.br"
-UA = {"User-Agent": "Mozilla/5.0 (apuracao-2026 diagnostico)"}
+UA = {"User-Agent": "Mozilla/5.0 (apuracao-2026 diagnostico)", "Origin": "https://veyronerp.github.io"}
 
 
 def get(url):
     try:
-        with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=15) as r:
+        with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=10) as r:
             return r.status, r.read(), dict(r.headers)
     except urllib.error.HTTPError as e:
-        return e.code, e.read(), dict(e.headers or {})
+        return e.code, b"", dict(e.headers or {})
     except Exception as e:
         return "ERRO %s" % e, b"", {}
 
 
 st, cfg, hd = get(TSE + "/oficial/comum/config/ele-c.json")
-print("== ele-c.json:", st, "| CORS:", hd.get("Access-Control-Allow-Origin"))
-print(cfg[:6000].decode("utf-8", "replace"))
+print("== ele-c.json:", st)
+print("== cabeçalhos:", {k: v for k, v in hd.items() if k.lower().startswith(("access-control", "cache", "content-type", "age", "x-"))})
+c = json.loads(cfg)
+for pl in c.get("pl", []):
+    if pl.get("c") == "ele2026":
+        print("pleito", pl.get("cd"), pl.get("dt"), [(e["cd"], e.get("cdt2"), e["nm"]) for e in pl.get("e", [])])
 
 st, html, _ = get(TSE + "/oficial/app/index.html")
-print("\n== app/index.html:", st)
-scripts = re.findall(r'src="([^"]+\.js)"', html.decode("utf-8", "replace"))
-print("scripts:", scripts)
-padroes = set()
-for s in scripts:
-    st, js, _ = get(TSE + "/oficial/app/" + s.lstrip("./"))
+main = re.findall(r'src="(main[^"]+\.js)"', html.decode("utf-8", "replace"))
+if main:
+    st, js, _ = get(TSE + "/oficial/app/" + main[0])
     txt = js.decode("utf-8", "replace")
-    print("--", s, st, len(txt))
-    for m in re.finditer(r'.{0,140}(dados-simplificados|fotos/|-r\.json|\.jpeg|config/).{0,140}', txt):
-        padroes.add(m.group(0))
-print("\n== trechos com caminhos de arquivos (%d):" % len(padroes))
-for p in sorted(padroes)[:60]:
-    print("  ", p)
+    print("\n== main.js", st, len(txt))
+    vistos = set()
+    for m in re.finditer(r'.{0,120}(\.json|\.jpeg|\.jpg|-c0|"-e"|-u\b|-r\b|-v\b).{0,120}', txt):
+        s = m.group(0)
+        k = s[100:160]
+        if k in vistos:
+            continue
+        vistos.add(k)
+        print("  >>", s)
+        if len(vistos) > 70:
+            break
 
-try:
-    c = json.loads(cfg)
-    ciclo = c.get("c")
-    for pl in c.get("pl", []):
-        for e in pl.get("e", []):
-            cd = int(e["cd"])
-            for uf, cargo in (("br", 1), ("es", 3)):
-                for url in ("%s/oficial/%s/%d/dados-simplificados/%s/%s-c%04d-e%06d-r.json" % (TSE, ciclo, cd, uf, uf, cargo, cd),
-                            "%s/oficial/%s/%d/dados/%s/%s-c%04d-e%06d-u.json" % (TSE, ciclo, cd, uf, uf, cargo, cd)):
-                    st, body, _ = get(url)
-                    print(st, url, body[:150])
-except Exception as e:
-    print("erro ao testar caminhos:", e)
+print("\n== testes de caminhos")
+achados = []
+for ele, uf, cargo in ((6258, "br", 1), (6257, "br", 1), (6260, "es", 3), (6259, "es", 3), (6258, "es", 1)):
+    base = "%s/oficial/ele2026/%d" % (TSE, ele)
+    e6 = "e%06d" % ele
+    for p in ("dados/{uf}/{uf}-c{c:04d}-{e}-u.json", "dados/{uf}/{uf}-c{c:04d}-{e}-v.json", "dados/{uf}/{uf}-c{c:04d}-{e}-r.json",
+              "dados/{uf}/{uf}-{e}-ab.json", "dados/{uf}/{uf}-c{c:04d}-{e}-e.json", "dados/{uf}/{uf}-{e}-e.json",
+              "dados-simplificados/{uf}/{uf}-c{c:04d}-{e}-r.json", "config/{uf}-{e}-cm.json", "config/mun-{e}-cm.json",
+              "config/{uf}/{uf}-{e}-cm.json"):
+        url = base + "/" + p.format(uf=uf, c=cargo, e=e6)
+        st, body, hd = get(url)
+        print(st, url, "CORS=", hd.get("Access-Control-Allow-Origin"))
+        if st == 200:
+            achados.append((url, body))
+for url, body in achados:
+    print("\n== CONTEÚDO", url, len(body))
+    print(body[:2500].decode("utf-8", "replace"))
