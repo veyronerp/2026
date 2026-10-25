@@ -1,58 +1,52 @@
-# Apuração 2026 — monitor em tempo real
+# Apuração 2026: app de celular em tempo real
 
-Painel que mostra a apuração oficial do TSE e **se atualiza sozinho a cada 10 segundos**.
-Usa os mesmos arquivos de dados do site oficial
-(`resultados.tse.jus.br`), então os números são os mesmos de lá.
+Mostra a apuração oficial do TSE para **Presidente** e **se atualiza sozinho a cada 10 segundos**:
 
-Por padrão abre a eleição **6258 / Brasil / Presidente**, a do link:
-https://resultados.tse.jus.br/oficial/app/index.html#/eleicao/6258/uf/br/cargo/1/vis/nominal/resultados
+- **Em cima, Brasil:** foto, porcentagem e votos de cada candidato (Lula em **vermelho**, Flávio em **azul**),
+  % de seções apuradas, vantagem em votos, comparecimento, abstenção, brancos e nulos.
+- **Embaixo, por estado:** os 27 estados + exterior, cada um com % apurado e a barra vermelho/azul com a
+  porcentagem de cada candidato. Dá para ordenar por A–Z, mais apurados ou maior eleitorado.
 
-## Como usar (o jeito mais fácil)
+Os dados são os mesmos arquivos que o site oficial usa (`resultados.tse.jus.br`), eleição **6258**.
 
-Precisa do Python 3 instalado (https://www.python.org/downloads/; no Windows marque
-"Add Python to PATH" na instalação). Nada mais precisa ser instalado.
+## Instalar no celular (sem senha, sem loja)
 
-1. Baixe o projeto: botão verde **Code → Download ZIP** no GitHub e descompacte.
-2. **Windows:** dê dois cliques em `iniciar-windows.bat`.
-   **Mac/Linux:** abra o terminal na pasta e rode `python3 monitor.py`.
-3. O navegador abre em **http://localhost:8000** com o painel. Deixe a janela preta aberta.
+### 1. Publicar o app (uma vez só, pelo navegador do celular em github.com)
 
-### Só no terminal (sem navegador)
+1. Abra **github.com/veyronerp/apuracao-2026 → Settings**.
+   (No celular, se não aparecer "Settings", use o menu do navegador → "Versão para computador".)
+2. **General → Danger Zone → Change visibility → Make public.** O GitHub Pages grátis só funciona
+   em repositório público. O repositório não tem nenhum dado pessoal nem senha.
+3. **Pages** (menu da esquerda) → *Source*: **Deploy from a branch** → Branch:
+   **ccr-b6bec831-6or9ox**, pasta **/ (root)** → **Save**.
+4. Espere 1–2 minutos. O app fica em: **https://veyronerp.github.io/apuracao-2026/**
 
-```
-python3 monitor.py --terminal
-```
+### 2. Colocar na tela inicial
 
-## O que o painel mostra
+- **Android (Chrome):** abra o link → menu ⋮ → **Instalar app** (ou "Adicionar à tela inicial").
+- **iPhone (Safari):** abra o link → botão Compartilhar → **Adicionar à Tela de Início**.
 
-- % de seções totalizadas e o horário da última totalização do TSE
-- Cada candidato: % dos votos válidos, total de votos, foto, e quantos votos ganhou na última atualização
-- Vantagem do 1º sobre o 2º (em votos e pontos percentuais)
-- Eleitorado, comparecimento, abstenção, brancos e nulos
-- Histórico das atualizações durante a sessão
-- O título da aba mostra quem lidera e o % apurado (dá para acompanhar com a aba em segundo plano)
+Pronto: vira um ícone "Apuração" que abre em tela cheia. Toque em **Manter tela ligada** para o
+celular não apagar enquanto você acompanha.
 
-## Outra eleição, estado ou cargo
+## Como os dados chegam
 
-No painel, abra **"Configurar eleição / estado / cargo"** e cole o link do site do TSE
-(ou preencha os campos). Pelo terminal:
+O app busca os arquivos direto do TSE. Se o navegador bloquear (regra de segurança CORS), ele tenta
+automaticamente proxies públicos gratuitos (allorigins, corsproxy, codetabs), que só repassam os arquivos
+públicos do TSE. No rodapé do app aparece qual fonte está em uso.
 
-```
-python3 monitor.py --eleicao 6258 --uf sp --cargo 3    # Governador de SP
-```
+## Outra eleição
 
-Cargos: 1 = Presidente, 3 = Governador, 5 = Senador.
+No app, abra **Configurar eleição** e cole o link do site do TSE (ou digite o código da eleição).
 
-## Por que precisa do `monitor.py`?
+## No computador (opcional)
 
-O navegador normalmente bloqueia uma página de outro site de ler os dados do TSE (regra de
-segurança chamada CORS). O `monitor.py` roda um servidorzinho só no seu computador
-(`127.0.0.1`) que busca os arquivos no TSE e entrega ao painel. Ele só repassa endereços
-`resultados.tse.jus.br/oficial/...`. Se você abrir o `index.html` direto e o TSE permitir o
-acesso, também funciona sem o `monitor.py`.
+Com Python 3: `python3 monitor.py` abre o painel em http://localhost:8000 usando um proxy local
+(não depende dos proxies públicos). `python3 monitor.py --terminal` mostra o resultado no terminal.
+No Windows, dois cliques em `iniciar-windows.bat`.
 
 ## Observações
 
-- O intervalo é de 10 s, o mesmo mínimo do botão "atualizar" do site do TSE. Não diminua:
-  o TSE bloqueia temporariamente IPs que fazem requisições demais.
+- 10 s é o mesmo intervalo mínimo do botão "atualizar" do site do TSE. Não diminua: o TSE bloqueia
+  temporariamente quem faz requisições demais.
 - O resultado oficial é sempre o publicado pelo TSE.

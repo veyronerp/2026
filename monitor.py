@@ -24,6 +24,8 @@ TSE = "https://resultados.tse.jus.br"
 INTERVALO = 10
 PASTA = os.path.dirname(os.path.abspath(__file__))
 UA = "Mozilla/5.0 (monitor-apuracao-2026)"
+ARQUIVOS = {"/index.html", "/manifest.webmanifest", "/sw.js",
+            "/icons/icon-180.png", "/icons/icon-192.png", "/icons/icon-512.png"}
 
 
 def baixar(caminho):
@@ -56,7 +58,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             return self.proxy(self.path[len("/tse"):])
         if self.path in ("/", ""):
             self.path = "/index.html"
-        if self.path.split("?")[0] != "/index.html":
+        if self.path.split("?")[0] not in ARQUIVOS:
             return self.send_error(404)
         return super().do_GET()
 
@@ -83,7 +85,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 def painel(args):
     srv = http.server.ThreadingHTTPServer(("127.0.0.1", args.porta), Handler)
-    url = "http://localhost:%d/?ele=%s&uf=%s&cargo=%s" % (args.porta, args.eleicao, args.uf, args.cargo)
+    url = "http://localhost:%d/?ele=%s" % (args.porta, args.eleicao)
     if args.ciclo:
         url += "&ciclo=" + args.ciclo
     print("Painel da apuração rodando em: " + url)
