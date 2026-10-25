@@ -26,15 +26,20 @@ Os dados são os mesmos arquivos que o site oficial usa (`resultados.tse.jus.br`
 
 ## Instalar no celular (sem senha, sem loja)
 
-### 1. Publicar o app (uma vez só, pelo navegador do celular em github.com)
+### 1. Abrir o app
 
-1. Abra **github.com/veyronerp/apuracao-2026 → Settings**.
-   (No celular, se não aparecer "Settings", use o menu do navegador → "Versão para computador".)
-2. **General → Danger Zone → Change visibility → Make public.** O GitHub Pages grátis só funciona
-   em repositório público. O repositório não tem nenhum dado pessoal nem senha.
-3. **Pages** (menu da esquerda) → *Source*: **Deploy from a branch** → Branch:
-   **ccr-b6bec831-6or9ox**, pasta **/ (root)** → **Save**.
-4. Espere 1–2 minutos. O app fica em: **https://veyronerp.github.io/apuracao-2026/**
+👉 **https://raw.githack.com/veyronerp/2026/main/index.html**
+
+Funciona na hora, sem configurar nada: o githack mostra os arquivos deste repositório público como site.
+Cada correção enviada para o `main` aparece em poucos minutos.
+
+**Opcional, endereço mais curto:** **https://veyronerp.github.io/2026/** depois de ativar o GitHub Pages
+(uma vez só, pelo navegador do celular, não pelo app do GitHub):
+
+1. Digite **github.com/veyronerp/2026/settings/pages** no Chrome/Safari.
+   (Se a página vier cortada, menu do navegador → "Versão para computador".)
+2. *Source*: **Deploy from a branch** → Branch: **main**, pasta **/ (root)** → **Save**.
+3. Espere 1–2 minutos e abra o link acima.
 
 ### 2. Colocar na tela inicial
 
