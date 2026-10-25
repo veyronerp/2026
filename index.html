@@ -219,7 +219,8 @@
     var n = norm(c.nome);
     if (/^LULA/.test(n)) return "Lula";
     if (/^FLAVIO/.test(n)) return "Flávio";
-    return titulo(c.nome);
+    var partes = titulo(c.nome).split(" ");
+    return partes.length > 1 ? partes[partes.length - 1] : partes[0];   // governador: sobrenome (Pazolini, Ferraço)
   }
 
   function caminho(ele, uf, cargo) {
