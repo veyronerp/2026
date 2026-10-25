@@ -25,7 +25,7 @@ TSE = "https://resultados.tse.jus.br"
 INTERVALO = 10
 PASTA = os.path.dirname(os.path.abspath(__file__))
 UA = "Mozilla/5.0 (monitor-apuracao-2026)"
-ARQUIVOS = {"/index.html", "/manifest.webmanifest", "/sw.js",
+ARQUIVOS = {"/index.html", "/manifest.webmanifest", "/sw.js", "/versao.txt",
             "/icons/icon-180.png", "/icons/icon-192.png", "/icons/icon-512.png"}
 
 
