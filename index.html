@@ -16,122 +16,128 @@
   :root {
     --bg: #f2f4f7; --card: #ffffff; --text: #16202c; --muted: #5d6b7a; --line: #dde3ea;
     --bar-bg: #e6ebf1; --accent: #0b5cad; --ok: #1a7f37; --bad: #c62828;
-    --lula: #d32f2f; --flavio: #1565c0; --outro: #7b8794;
+    --lula: #d32f2f; --flavio: #1565c0; --c1: #7b1fa2; --c2: #00897b; --c3: #ef6c00; --outro: #7b8794;
   }
   @media (prefers-color-scheme: dark) {
     :root { --bg: #0f141a; --card: #18202a; --text: #e9eef4; --muted: #95a3b3; --line: #2a3542;
       --bar-bg: #243040; --accent: #5aa9ff; --ok: #4cc26a; --bad: #ff6b6b;
-      --lula: #ef5350; --flavio: #42a5f5; --outro: #8a96a3; }
+      --lula: #ef5350; --flavio: #42a5f5; --c1: #ba68c8; --c2: #26a69a; --c3: #ffa726; --outro: #8a96a3; }
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--text); }
-  body { font: 15px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  body { font: 14px/1.3 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
-  .wrap { max-width: 760px; margin: 0 auto; padding: 12px 16px 32px; }
-  .topo { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
-  .topo h1 { font-size: 18px; margin: 0; }
-  .status { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 8px 10px 24px; }
+  .topo { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+  .topo h1 { font-size: 16px; margin: 0; }
+  .status { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex: none; }
   .dot.on { background: var(--ok); } .dot.err { background: var(--bad); }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-top: 12px; }
-  .sec-t { font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin: 18px 2px 0; }
-  .muted { color: var(--muted); font-size: 12px; }
-  .apur { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-  .apur b { font-size: 22px; font-variant-numeric: tabular-nums; }
-  .bar { height: 8px; background: var(--bar-bg); border-radius: 6px; overflow: hidden; margin-top: 6px; }
-  .bar > span { display: block; height: 100%; background: var(--accent); transition: width .6s; }
-  .duelo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
-  .cand { text-align: center; border-radius: 12px; padding: 12px 8px; border: 2px solid transparent; position: relative; }
-  .cand.lider { border-color: var(--cor); }
-  .foto { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; display: block; margin: 0 auto;
+  .tela { font: inherit; font-size: 11px; padding: 3px 7px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--card); color: var(--muted); }
+  .tela.on { color: var(--ok); border-color: var(--ok); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 9px 10px; margin-top: 7px; }
+  .cab { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+  .cab .t { font-size: 12px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; color: var(--muted); }
+  .cab .a { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .cab .a b { color: var(--text); font-size: 14px; }
+  .prog { height: 3px; background: var(--bar-bg); border-radius: 2px; overflow: hidden; margin-top: 4px; }
+  .prog > span { display: block; height: 100%; background: var(--accent); transition: width .6s; }
+  .muted { color: var(--muted); font-size: 11px; }
+
+  /* duelo de dois candidatos (Brasil e ES) */
+  .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 7px; }
+  .c { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .c.dir { flex-direction: row-reverse; text-align: right; }
+  .foto { width: var(--fs, 54px); height: var(--fs, 54px); border-radius: 50%; object-fit: cover; flex: none;
     border: 3px solid var(--cor); background: var(--bar-bg); }
-  .inicial { width: 84px; height: 84px; border-radius: 50%; margin: 0 auto; display: grid; place-items: center;
-    background: var(--cor); color: #fff; font-size: 34px; font-weight: 700; }
-  .cand .nome { font-weight: 700; margin-top: 6px; font-size: 15px; }
-  .cand .pct { font-size: 34px; font-weight: 800; color: var(--cor); font-variant-numeric: tabular-nums; line-height: 1.1; margin-top: 2px; }
-  .cand .votos { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
-  .cand .ganho { font-size: 11px; color: var(--ok); min-height: 14px; }
-  .cand .cbar { height: 10px; background: var(--bar-bg); border-radius: 6px; overflow: hidden; margin-top: 8px; }
-  .cand .cbar > span { display: block; height: 100%; background: var(--cor); transition: width .6s; }
-  .selo { position: absolute; top: 6px; right: 6px; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 8px;
-    background: var(--cor); color: #fff; }
-  .split { display: flex; height: 14px; border-radius: 7px; overflow: hidden; background: var(--bar-bg); margin-top: 12px; }
+  .inicial { width: var(--fs, 54px); height: var(--fs, 54px); border-radius: 50%; flex: none; display: grid; place-items: center;
+    background: var(--cor); color: #fff; font-size: 22px; font-weight: 700; }
+  .c .info { min-width: 0; }
+  .c .nm { font-weight: 700; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .c .pc { font-size: var(--ps, 28px); font-weight: 800; color: var(--cor); font-variant-numeric: tabular-nums; line-height: 1.05; }
+  .c .vt { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .c .vt .g { color: var(--ok); }
+  .selo { display: inline-block; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 6px;
+    background: var(--cor); color: #fff; vertical-align: 2px; margin: 0 3px; }
+  .split { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--bar-bg); margin-top: 7px; }
   .split > span { height: 100%; transition: width .6s; }
-  .vant { text-align: center; font-size: 13px; margin-top: 8px; }
-  .extras { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 12px; text-align: center; }
-  .extras div { font-size: 11px; color: var(--muted); }
-  .extras b { display: block; font-size: 14px; color: var(--text); font-variant-numeric: tabular-nums; }
-  .ordem { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-  .ordem button { font: inherit; font-size: 12px; padding: 5px 10px; border-radius: 14px; border: 1px solid var(--line);
-    background: var(--card); color: var(--text); }
+  .linha { display: flex; justify-content: space-between; gap: 6px; font-size: 12px; margin-top: 5px; flex-wrap: wrap; }
+  .gov { --fs: 42px; --ps: 22px; }
+
+  /* grade de estados */
+  .ordem { display: flex; gap: 4px; }
+  .ordem button { font: inherit; font-size: 11px; padding: 2px 7px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--card); color: var(--muted); }
   .ordem button.sel { background: var(--text); color: var(--bg); border-color: var(--text); }
-  .uf { padding: 10px 0; border-top: 1px solid var(--line); }
-  .uf:first-child { border-top: 0; padding-top: 0; }
-  .uf-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-  .uf-top .n { font-weight: 700; }
-  .uf-top .n small { font-weight: 400; color: var(--muted); }
-  .uf .split { height: 12px; margin-top: 6px; }
-  .uf-nums { display: flex; justify-content: space-between; font-size: 14px; font-variant-numeric: tabular-nums; margin-top: 4px; }
-  .uf-nums .l { font-weight: 800; }
-  .erro { color: var(--bad); font-size: 13px; }
+  .grade { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 7px; }
+  @media (min-width: 560px) { .grade { grid-template-columns: repeat(6, 1fr); } }
+  @media (max-width: 330px) { .grade { grid-template-columns: repeat(3, 1fr); } }
+  .uf { border: 1px solid var(--line); border-radius: 8px; padding: 4px 5px; min-width: 0; }
+  .uf.es { border-color: var(--accent); }
+  .uf .t { display: flex; justify-content: space-between; align-items: baseline; font-size: 10px; color: var(--muted); }
+  .uf .t b { font-size: 12px; color: var(--text); }
+  .uf .split { height: 7px; margin-top: 3px; border-radius: 4px; }
+  .uf .n { display: flex; justify-content: space-between; font-size: 11px; font-variant-numeric: tabular-nums; margin-top: 2px; }
+  .uf .n .l { font-weight: 800; }
+
+  .erro { color: var(--bad); font-size: 12px; margin-top: 4px; }
   .hidden { display: none !important; }
-  .acoes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-  .acoes button { font: inherit; font-size: 13px; padding: 7px 12px; border-radius: 10px; border: 1px solid var(--line);
-    background: var(--card); color: var(--text); }
-  details summary { cursor: pointer; color: var(--muted); font-size: 13px; }
-  .cfg { display: grid; gap: 8px; margin-top: 10px; }
-  .cfg label { font-size: 12px; color: var(--muted); display: grid; gap: 3px; }
-  input { font: inherit; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); width: 100%; }
-  @media (max-width: 380px) { .cand .pct { font-size: 28px; } .foto, .inicial { width: 68px; height: 68px; } }
+  details summary { cursor: pointer; color: var(--muted); font-size: 12px; }
+  .cfg { display: grid; gap: 6px; margin-top: 8px; }
+  .cfg label { font-size: 11px; color: var(--muted); display: grid; gap: 3px; }
+  input { font: inherit; padding: 7px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); width: 100%; }
+  .btn { font: inherit; font-size: 12px; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--text); }
+  @media (min-width: 560px) { .duo { --fs: 72px; --ps: 36px; } .gov { --fs: 54px; --ps: 28px; } }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="topo">
-    <h1 id="titulo">Apuração 2026</h1>
-    <div class="status"><span class="dot" id="dot"></span><span id="status">carregando…</span></div>
+    <h1>Apuração 2026</h1>
+    <div class="status"><span class="dot" id="dot"></span><span id="status">carregando…</span>
+      <button class="tela" id="btnTela" title="Manter a tela do celular ligada">tela ligada</button></div>
   </div>
 
-  <!-- ===== PAINEL NACIONAL ===== -->
-  <div class="sec-t">Brasil</div>
-  <div class="card" id="nacional">
-    <div class="apur"><span class="muted">Seções apuradas</span><b id="brPst">–</b></div>
-    <div class="bar"><span id="brPstBar" style="width:0"></span></div>
-    <div class="muted" id="brHora" style="margin-top:4px">&nbsp;</div>
-    <div class="duelo" id="brCands"></div>
+  <!-- Presidente · Brasil -->
+  <div class="card">
+    <div class="cab"><span class="t" id="brTit">Presidente · Brasil</span><span class="a"><b id="brPst">–</b> apurado</span></div>
+    <div class="prog"><span id="brProg" style="width:0"></span></div>
+    <div class="duo" id="brDuo"></div>
     <div class="split" id="brSplit"></div>
-    <div class="vant" id="brVant"></div>
-    <div class="extras" id="brExtras"></div>
+    <div class="linha"><span id="brVant"></span><span class="muted" id="brHora"></span></div>
     <div class="erro hidden" id="brErro"></div>
   </div>
 
-  <!-- ===== PAINEL POR ESTADO ===== -->
-  <div class="sec-t">Por estado</div>
-  <div class="ordem" id="ordem">
-    <button data-o="az" class="sel">A–Z</button>
-    <button data-o="apur">Mais apurados</button>
-    <button data-o="eleit">Maior eleitorado</button>
+  <!-- Governador · Espírito Santo -->
+  <div class="card gov">
+    <div class="cab"><span class="t" id="esTit">Governador · Espírito Santo</span><span class="a"><b id="esPst">–</b> apurado</span></div>
+    <div class="prog"><span id="esProg" style="width:0"></span></div>
+    <div class="duo" id="esDuo"><div class="muted">Carregando…</div></div>
+    <div class="split" id="esSplit"></div>
+    <div class="linha"><span id="esVant"></span><span class="muted" id="esHora"></span></div>
   </div>
-  <div class="card" id="estados"><div class="muted">Carregando estados…</div></div>
+
+  <!-- Presidente por estado -->
+  <div class="card">
+    <div class="cab"><span class="t">Presidente por estado</span>
+      <div class="ordem" id="ordem"><button data-o="az" class="sel">A–Z</button><button data-o="apur">% apur.</button><button data-o="eleit">eleitores</button></div>
+    </div>
+    <div class="grade" id="estados"></div>
+  </div>
 
   <div class="card">
-    <div class="acoes">
-      <button id="btnTela">Manter tela ligada</button>
-      <button id="btnInstalar" class="hidden">Instalar app</button>
-    </div>
-    <details style="margin-top:12px">
+    <button id="btnInstalar" class="btn hidden" style="margin-bottom:8px">Instalar app</button>
+    <details>
       <summary>Configurar eleição</summary>
       <div class="cfg">
-        <label>Colar link do site do TSE
-          <input id="cfgLink" placeholder="…#/eleicao/6258/uf/br/cargo/1/…">
-        </label>
+        <label>Colar link do site do TSE <input id="cfgLink" placeholder="…#/eleicao/6258/uf/br/cargo/1/…"></label>
         <label>Código da eleição <input id="cfgEle" inputmode="numeric"></label>
         <label>Ciclo (vazio = automático) <input id="cfgCiclo" placeholder="ele2026"></label>
-        <div><button id="btnAplicar" class="acoes" style="padding:7px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text)">Aplicar</button></div>
+        <div><button id="btnAplicar" class="btn">Aplicar</button></div>
       </div>
     </details>
-    <div class="muted" style="margin-top:10px">Dados oficiais de resultados.tse.jus.br, atualizados a cada 10 segundos.
-      <span id="fonteInfo"></span></div>
+    <div class="muted" style="margin-top:8px">Dados oficiais de resultados.tse.jus.br, atualizados a cada 10 s. <span id="fonteInfo"></span></div>
   </div>
 </div>
 
@@ -141,6 +147,7 @@
 
   var INTERVALO = 10;
   var TSE = "https://resultados.tse.jus.br";
+  var MEU_UF = "es";   // governador em destaque
   var UFS = [["ac","Acre"],["al","Alagoas"],["ap","Amapá"],["am","Amazonas"],["ba","Bahia"],["ce","Ceará"],
     ["df","Distrito Federal"],["es","Espírito Santo"],["go","Goiás"],["ma","Maranhão"],["mt","Mato Grosso"],
     ["ms","Mato Grosso do Sul"],["mg","Minas Gerais"],["pa","Pará"],["pb","Paraíba"],["pr","Paraná"],
@@ -160,11 +167,15 @@
 
   var cfg = lerConfig();
   var ciclo = cfg.ciclo || null;
+  var eleicoes = [];        // códigos de eleição listados na configuração do TSE
+  var govEle = null;        // eleição onde foi achado o governador do ES (2º turno, ou 1º se já decidido)
   var restante = 0, buscando = false;
-  var brUlt = null, brAnt = {}, brGanho = {};
-  var estados = {};       // uf -> dados resumidos
+  var paineis = { br: novoPainel(), gov: novoPainel() };
+  var estados = {};
   var ordem = "az";
   var $ = function (id) { return document.getElementById(id); };
+
+  function novoPainel() { return { ult: null, ant: {}, ganho: {} }; }
 
   function lerConfig() {
     var c = { ele: "6258", ciclo: "" };
@@ -179,28 +190,36 @@
   function int(x) { return parseInt(String(x == null ? "" : x).replace(/\D/g, ""), 10) || 0; }
   function pct(x) { return parseFloat(String(x == null ? "" : x).replace(/\./g, "").replace(",", ".")) || 0; }
   function fmt(n) { return n.toLocaleString("pt-BR"); }
-  function fp(n) { return n.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%"; }
+  function fp(n, d) { d = d == null ? 2 : d; return n.toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d }) + "%"; }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return "&#" + c.charCodeAt(0) + ";"; }); }
   function norm(s) { return String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase(); }
+  function titulo(s) {
+    return String(s || "").toLowerCase().replace(/(^|\s)(\S)/g, function (m, a, b) { return a + b.toUpperCase(); })
+      .replace(/\s(De|Da|Do|Dos|Das|E)\s/g, function (m) { return m.toLowerCase(); });
+  }
 
-  function cor(c) {
+  function corPresidente(c) {
     var n = norm(c.nome);
     if (/LULA/.test(n) || c.n === "13") return "var(--lula)";
     if (/FLAVIO|BOLSONARO/.test(n) || c.n === "22") return "var(--flavio)";
     return "var(--outro)";
   }
-  function primeiroNome(c) {
+  // governador: PT vermelho, PL azul, os demais com cores próprias
+  function coresGov(cs) {
+    var pal = ["var(--c1)", "var(--c2)", "var(--c3)"], k = 0;
+    cs.forEach(function (c) { c.cor = c.n.slice(0, 2) === "13" ? "var(--lula)" : c.n.slice(0, 2) === "22" ? "var(--flavio)" : (pal[k++] || "var(--outro)"); });
+  }
+  function apelido(c) {
     var n = norm(c.nome);
-    if (/LULA/.test(n)) return "Lula";
-    if (/FLAVIO/.test(n)) return "Flávio";
-    var w = String(c.nome || "").split(/\s+/)[0] || "";
-    return w.charAt(0) + w.slice(1).toLowerCase();
+    if (/^LULA/.test(n)) return "Lula";
+    if (/^FLAVIO/.test(n)) return "Flávio";
+    return titulo(c.nome);
   }
 
-  function caminho(uf) {
-    return "/oficial/" + ciclo + "/" + cfg.ele + "/dados-simplificados/" + uf + "/" + uf + "-c0001-e" + pad(cfg.ele, 6) + "-r.json";
+  function caminho(ele, uf, cargo) {
+    return "/oficial/" + ciclo + "/" + ele + "/dados-simplificados/" + uf + "/" + uf + "-c" + pad(cargo, 4) + "-e" + pad(ele, 6) + "-r.json";
   }
-  function urlFoto(sq) { return TSE + "/oficial/" + ciclo + "/" + cfg.ele + "/fotos/br/" + sq + ".jpeg"; }
+  function urlFoto(ele, uf, sq) { return (local ? "/tse" : TSE) + "/oficial/" + ciclo + "/" + ele + "/fotos/" + uf + "/" + sq + ".jpeg"; }
 
   function tentar(url) {
     var ctl = new AbortController();
@@ -228,67 +247,99 @@
     return prox(0);
   }
 
-  function descobrirCiclo() {
-    if (ciclo) return Promise.resolve();
+  function lerConfigTSE() {
+    if (ciclo && eleicoes.length) return Promise.resolve();
     return getJSON("/oficial/comum/config/ele-c.json").then(function (j) {
-      ciclo = (j && j.c) || "ele2026";
-    }).catch(function () { ciclo = "ele2026"; });
+      if (!ciclo) ciclo = (j && j.c) || "ele2026";
+      eleicoes = [];
+      (j.pl || []).forEach(function (pl) { (pl.e || []).forEach(function (e) { if (int(e.cd)) eleicoes.push(int(e.cd)); }); });
+    }).catch(function () { if (!ciclo) ciclo = "ele2026"; });
   }
 
   function cands(d) {
     return (d.cand || []).map(function (c) {
       return { sq: c.sqcand, n: String(c.n), nome: c.nm || c.nmu || c.nv || "", st: c.st || "", eleito: c.e === "s",
         votos: int(c.vap), pct: pct(c.pvap) };
-    }).sort(function (a, b) { return int(a.n) - int(b.n); });   // ordem fixa: 13 (Lula) à esquerda, 22 (Flávio) à direita
+    }).sort(function (a, b) { return int(a.n) - int(b.n); });
   }
   function lider(cs) { var l = null; cs.forEach(function (c) { if (c.votos > 0 && (!l || c.votos > l.votos)) l = c; }); return l; }
+  function porVotos(cs) { return cs.slice().sort(function (a, b) { return b.votos - a.votos; }); }
   function splitBar(cs) {
-    return cs.map(function (c) { return '<span style="width:' + Math.max(0, c.pct) + '%;background:' + cor(c) + '"></span>'; }).join("");
+    return cs.map(function (c) { return '<span style="width:' + Math.max(0, c.pct) + '%;background:' + c.cor + '"></span>'; }).join("");
   }
 
-  // ---------------------------------------------------------------- nacional
-  function renderBrasil(d) {
-    var cs = cands(d);
-    var novo = !brUlt || brUlt.hg !== d.hg || brUlt.st !== d.st;
-    if (novo && brUlt) { brGanho = {}; cs.forEach(function (c) { if (c.sq in brAnt) brGanho[c.sq] = c.votos - brAnt[c.sq]; }); }
-    if (novo) { brAnt = {}; cs.forEach(function (c) { brAnt[c.sq] = c.votos; }); }
-    brUlt = d;
+  // ---------------------------------------------------------------- fotos
+  // 1º foto oficial do TSE; se não carregar, foto da Wikipédia (Lula e Flávio); por fim, a inicial colorida.
+  var fotoAlt = {};   // sqcand -> url alternativa, "buscando", ou "x" = sem foto
+  var espera = {};    // sqcand -> imagens aguardando a busca na Wikipédia
+  function wikiTitulo(c) {
+    var n = norm(c.nome);
+    if (/^LULA/.test(n)) return "Luiz Inácio Lula da Silva";
+    if (/^FLAVIO/.test(n) && (/BOLSONARO/.test(n) || c.n === "22")) return "Flávio Bolsonaro";
+    return "";
+  }
+  function inicialHTML(c) { return '<div class="inicial">' + esc(apelido(c).charAt(0)) + "</div>"; }
+  function fotoHTML(c, ele, uf) {
+    var alt = fotoAlt[c.sq];
+    if (alt === "buscando") alt = null;
+    if (alt === "x") return inicialHTML(c);
+    return '<img class="foto" alt="' + esc(apelido(c)) + '" src="' + esc(alt || urlFoto(ele, uf, c.sq)) + '" data-sq="' + esc(c.sq) +
+      '" data-wiki="' + esc(wikiTitulo(c)) + '" data-ini="' + esc(apelido(c).charAt(0)) + '" onerror="fotoErro(this)">';
+  }
+  window.fotoErro = function (img) {
+    var sq = img.getAttribute("data-sq"), w = img.getAttribute("data-wiki");
+    function semFoto() {
+      fotoAlt[sq] = "x";
+      var d = document.createElement("div"); d.className = "inicial"; d.textContent = img.getAttribute("data-ini");
+      if (img.parentNode) img.parentNode.replaceChild(d, img);
+    }
+    if (fotoAlt[sq] === "buscando") { (espera[sq] = espera[sq] || []).push(img); return; }
+    if (!w || fotoAlt[sq]) return semFoto();
+    fotoAlt[sq] = "buscando"; espera[sq] = [img];
+    fetch("https://pt.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(w.replace(/ /g, "_")))
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        var u = j && (j.thumbnail && j.thumbnail.source || j.originalimage && j.originalimage.source);
+        if (!u) throw new Error("sem foto");
+        fotoAlt[sq] = u;
+        (espera[sq] || []).forEach(function (im) { im.setAttribute("data-wiki", ""); im.src = u; });
+        espera[sq] = [];
+      }).catch(function () {
+        (espera[sq] || []).forEach(function (im) { img = im; semFoto(); });
+        fotoAlt[sq] = "x"; espera[sq] = [];
+      });
+  };
 
-    $("titulo").textContent = "Presidente" + (d.t ? " · " + d.t + "º turno" : "");
+  // Desenha um painel com os dois principais candidatos (usado para Presidente e Governador).
+  function renderDuelo(px, painel, d, cs, ele, uf, ordemFixa) {
+    var novo = !painel.ult || painel.ult.hg !== d.hg || painel.ult.st !== d.st;
+    if (novo && painel.ult) { painel.ganho = {}; cs.forEach(function (c) { if (c.sq in painel.ant) painel.ganho[c.sq] = c.votos - painel.ant[c.sq]; }); }
+    if (novo) { painel.ant = {}; cs.forEach(function (c) { painel.ant[c.sq] = c.votos; }); }
+    painel.ult = d;
+
     var ps = pct(d.pst);
-    $("brPst").textContent = fp(ps);
-    $("brPstBar").style.width = Math.min(ps, 100) + "%";
-    $("brHora").textContent = fmt(int(d.st)) + " de " + fmt(int(d.s)) + " seções · TSE " + (d.dg || "") + " " + (d.hg || "");
+    $(px + "Pst").textContent = fp(ps);
+    $(px + "Prog").style.width = Math.min(ps, 100) + "%";
+    $(px + "Hora").textContent = "TSE " + (d.hg || "");
 
-    var l = lider(cs);
-    var principais = cs.length > 2 ? cs.slice().sort(function (a, b) { return b.votos - a.votos; }).slice(0, 2)
-      .sort(function (a, b) { return int(a.n) - int(b.n); }) : cs;
-    $("brCands").innerHTML = principais.map(function (c) {
-      var selo = c.eleito ? "ELEITO" : (l === c ? "À FRENTE" : "");
-      var g = brGanho[c.sq] ? "+" + fmt(brGanho[c.sq]) + " votos" : "";
-      return '<div class="cand' + (l === c ? " lider" : "") + '" style="--cor:' + cor(c) + '">' +
-        (selo ? '<span class="selo">' + selo + "</span>" : "") +
-        '<img class="foto" alt="" src="' + esc(urlFoto(c.sq)) + '" onerror="this.outerHTML=\'<div class=inicial>' +
-          esc(primeiroNome(c).charAt(0)) + '</div>\'">' +
-        '<div class="nome">' + esc(primeiroNome(c)) + ' <span class="muted">' + esc(c.n) + "</span></div>" +
-        '<div class="pct">' + fp(c.pct) + "</div>" +
-        '<div class="votos">' + fmt(c.votos) + " votos</div>" +
-        '<div class="ganho">' + g + "</div>" +
-        '<div class="cbar"><span style="width:' + Math.min(c.pct, 100) + '%"></span></div>' +
-        "</div>";
-    }).join("");
-    $("brSplit").innerHTML = splitBar(cs);
-
-    var rk = cs.slice().sort(function (a, b) { return b.votos - a.votos; });
-    $("brVant").innerHTML = rk.length >= 2 && rk[0].votos > 0
-      ? '<b style="color:' + cor(rk[0]) + '">' + esc(primeiroNome(rk[0])) + "</b> à frente por <b>" +
-        fmt(rk[0].votos - rk[1].votos) + "</b> votos (" + fp(rk[0].pct - rk[1].pct).replace("%", " p.p.") + ")"
+    var rk = porVotos(cs), l = lider(cs);
+    var dois = rk.slice(0, 2);
+    if (ordemFixa) dois.sort(function (a, b) { return int(a.n) - int(b.n); });
+    $(px + "Duo").innerHTML = dois.map(function (c, i) {
+      var selo = c.eleito ? "ELEITO" : (/2/.test(c.st) ? "2º TURNO" : (l === c ? "À FRENTE" : ""));
+      var g = painel.ganho[c.sq] ? ' <span class="g">+' + fmt(painel.ganho[c.sq]) + "</span>" : "";
+      var nome = esc(apelido(c));
+      return '<div class="c' + (i === 1 ? " dir" : "") + '" style="--cor:' + c.cor + '">' +
+        fotoHTML(c, ele, uf) +
+        '<div class="info"><div class="nm">' + (selo ? '<span class="selo">' + selo + "</span>" : "") + nome + "</div>" +
+        '<div class="pc">' + fp(c.pct) + "</div>" +
+        '<div class="vt">' + fmt(c.votos) + g + "</div></div></div>";
+    }).join("") || '<div class="muted">Sem candidatos no arquivo.</div>';
+    $(px + "Split").innerHTML = splitBar(cs);
+    $(px + "Vant").innerHTML = rk.length >= 2 && rk[0].votos > 0
+      ? '<b style="color:' + rk[0].cor + '">' + esc(apelido(rk[0])) + "</b> +" + fmt(rk[0].votos - rk[1].votos) + " votos"
       : "";
-    $("brExtras").innerHTML =
-      "<div>Comparec.<b>" + fp(pct(d.pc)) + "</b></div><div>Abstenção<b>" + fp(pct(d.pa)) + "</b></div>" +
-      "<div>Brancos<b>" + fp(pct(d.pvb)) + "</b></div><div>Nulos<b>" + fp(pct(d.ptvn || d.pvn)) + "</b></div>";
-
-    if (l) document.title = primeiroNome(l) + " " + fp(l.pct) + " · " + fp(ps) + " apurado";
+    return l;
   }
 
   // ---------------------------------------------------------------- estados
@@ -298,17 +349,13 @@
     if (ordem === "eleit") lista.sort(function (a, b) { return (b.d ? b.d.e : -1) - (a.d ? a.d.e : -1); });
     $("estados").innerHTML = lista.map(function (x) {
       var d = x.d;
-      var topo = '<div class="uf-top"><span class="n">' + x.uf.toUpperCase() + " <small>" + esc(x.nome) + "</small></span>" +
-        '<span class="muted">' + (d ? fp(d.pst) + " apurado" : (d === null ? "sem dados" : "…")) + "</span></div>";
-      if (!d) return '<div class="uf">' + topo + '<div class="split"></div></div>';
-      var l = lider(d.cs);
-      var nums = d.cs.length <= 2
-        ? d.cs.map(function (c, i) {
-            var t = i === 0 ? esc(primeiroNome(c)) + " " + fp(c.pct) : fp(c.pct) + " " + esc(primeiroNome(c));
-            return '<span class="' + (l === c ? "l" : "") + '" style="color:' + cor(c) + '">' + t + "</span>";
-          }).join("")
-        : (l ? '<span class="l" style="color:' + cor(l) + '">' + esc(primeiroNome(l)) + " " + fp(l.pct) + "</span>" : "");
-      return '<div class="uf">' + topo + '<div class="split">' + splitBar(d.cs) + '</div><div class="uf-nums">' + nums + "</div></div>";
+      var h = '<div class="uf' + (x.uf === MEU_UF ? " es" : "") + '" title="' + esc(x.nome) + '"><div class="t"><b>' + x.uf.toUpperCase() + "</b>" +
+        "<span>" + (d ? fp(d.pst, 0) : (d === null ? "s/ dados" : "…")) + "</span></div>";
+      if (!d) return h + '<div class="split"></div><div class="n">&nbsp;</div></div>';
+      var l = lider(d.cs), dois = d.cs.length > 2 ? porVotos(d.cs).slice(0, 2).sort(function (a, b) { return int(a.n) - int(b.n); }) : d.cs;
+      return h + '<div class="split">' + splitBar(d.cs) + '</div><div class="n">' + dois.map(function (c) {
+        return '<span class="' + (l === c ? "l" : "") + '" style="color:' + c.cor + '">' + fp(c.pct, 1).replace("%", "") + "</span>";
+      }).join("") + "</div></div>";
     }).join("");
   }
 
@@ -318,8 +365,9 @@
     function worker() {
       var uf = fila.shift();
       if (!uf) return Promise.resolve();
-      return getJSON(caminho(uf)).then(function (d) {
-        estados[uf] = { pst: pct(d.pst), e: int(d.e), cs: cands(d) };
+      return getJSON(caminho(cfg.ele, uf, 1)).then(function (d) {
+        var cs = cands(d); cs.forEach(function (c) { c.cor = corPresidente(c); });
+        estados[uf] = { pst: pct(d.pst), e: int(d.e), cs: cs };
       }, function () {
         if (!(uf in estados)) estados[uf] = null;
       }).then(function () { renderEstados(); return worker(); });
@@ -329,32 +377,63 @@
     return Promise.all(ws);
   }
 
+  // ---------------------------------------------------------------- governador do ES
+  // Tenta primeiro a eleição atual (2º turno). Se o ES não tiver 2º turno, procura nas outras
+  // eleições do ciclo (1º turno) e mostra quem foi eleito.
+  function buscarGov() {
+    var tentativas = govEle ? [govEle] : [int(cfg.ele)].concat(
+      eleicoes.filter(function (e) { return e !== int(cfg.ele); }).sort(function (a, b) { return b - a; }).slice(0, 4),
+      [int(cfg.ele) - 1]);
+    tentativas = tentativas.filter(function (e, i, a) { return e > 0 && a.indexOf(e) === i; });
+    function prox(k) {
+      if (k >= tentativas.length) return Promise.reject(new Error("não encontrado"));
+      var ele = tentativas[k];
+      return getJSON(caminho(ele, MEU_UF, 3)).then(function (d) {
+        if (!d.cand || !d.cand.length) throw new Error("vazio");
+        return { ele: ele, d: d };
+      }).catch(function () { return prox(k + 1); });
+    }
+    return prox(0).then(function (r) {
+      if (govEle !== r.ele) paineis.gov = novoPainel();
+      govEle = r.ele;
+      var cs = cands(r.d); coresGov(cs);
+      var turno = r.d.t ? r.d.t + "º turno" : "";
+      $("esTit").textContent = "Governador · ES" + (turno ? " · " + turno : "");
+      renderDuelo("es", paineis.gov, r.d, cs, r.ele, MEU_UF, false);
+    }, function () {
+      govEle = null;
+      if (!paineis.gov.ult) $("esDuo").innerHTML = '<div class="muted">Ainda sem dados do governador do ES.</div>';
+    });
+  }
+
   // ---------------------------------------------------------------- ciclo de atualização
   function atualizar() {
     if (buscando) return;
     buscando = true;
     $("status").textContent = "atualizando…";
-    descobrirCiclo().then(function () {
-      return getJSON(caminho("br")).then(function (d) {
+    lerConfigTSE().then(function () {
+      var br = getJSON(caminho(cfg.ele, "br", 1)).then(function (d) {
         $("brErro").classList.add("hidden");
         $("dot").className = "dot on";
-        renderBrasil(d);
+        var cs = cands(d); cs.forEach(function (c) { c.cor = corPresidente(c); });
+        $("brTit").textContent = "Presidente · Brasil" + (d.t ? " · " + d.t + "º turno" : "");
+        var l = renderDuelo("br", paineis.br, d, cs, cfg.ele, "br", true);
+        if (l) document.title = apelido(l) + " " + fp(l.pct) + " · " + fp(pct(d.pst)) + " apurado";
       }, function (e) {
         $("dot").className = "dot err";
         $("brErro").classList.remove("hidden");
         $("brErro").textContent = "Não consegui ler os dados do TSE (" + (e && e.message || e) + "). Tentando de novo em 10 s.";
-      }).then(buscarEstados);
+      });
+      return Promise.all([br, buscarGov()]).then(buscarEstados);
     }).then(function () {
       buscando = false;
       restante = INTERVALO;
-      $("fonteInfo").textContent = "Fonte em uso: " + FONTES[fonte].nome + ".";
+      $("fonteInfo").textContent = "Fonte: " + FONTES[fonte].nome + ".";
       tick();
     });
   }
   function tick() {
-    if (buscando) return;
-    var h = brUlt && brUlt.hg ? "TSE " + brUlt.hg + " · " : "";
-    $("status").textContent = h + "atualiza em " + restante + "s";
+    if (!buscando) $("status").textContent = "atualiza em " + restante + "s";
   }
   setInterval(function () {
     if (buscando || document.hidden) return;
@@ -374,18 +453,20 @@
     };
   });
 
-  var wake = null;
-  $("btnTela").onclick = function () {
-    if (!("wakeLock" in navigator)) { $("btnTela").textContent = "Seu navegador não permite"; return; }
-    if (wake) { wake.release(); wake = null; $("btnTela").textContent = "Manter tela ligada"; return; }
+  var wake = null, querTela = false;
+  function ligarTela() {
     navigator.wakeLock.request("screen").then(function (w) {
-      wake = w; $("btnTela").textContent = "Tela ligada ✓ (tocar p/ desligar)";
-      w.addEventListener("release", function () { if (wake === w) { wake = null; $("btnTela").textContent = "Manter tela ligada"; } });
+      wake = w; $("btnTela").classList.add("on"); $("btnTela").textContent = "tela ligada ✓";
+      w.addEventListener("release", function () { if (wake === w) { wake = null; $("btnTela").classList.remove("on"); } });
     }).catch(function () {});
+  }
+  $("btnTela").onclick = function () {
+    if (!("wakeLock" in navigator)) { $("btnTela").textContent = "não suportado"; return; }
+    querTela = !querTela;
+    if (querTela) ligarTela();
+    else { if (wake) wake.release(); wake = null; $("btnTela").classList.remove("on"); $("btnTela").textContent = "tela ligada"; }
   };
-  document.addEventListener("visibilitychange", function () {
-    if (!document.hidden && $("btnTela").textContent.indexOf("✓") >= 0 && !wake) $("btnTela").click();
-  });
+  document.addEventListener("visibilitychange", function () { if (!document.hidden && querTela && !wake) ligarTela(); });
 
   var pedidoInstalar = null;
   window.addEventListener("beforeinstallprompt", function (e) {
@@ -396,16 +477,13 @@
   };
 
   $("cfgEle").value = cfg.ele; $("cfgCiclo").value = cfg.ciclo;
-  $("cfgLink").oninput = function () {
-    var m = this.value.match(/eleicao\/(\d+)/i);
-    if (m) $("cfgEle").value = m[1];
-  };
+  $("cfgLink").oninput = function () { var m = this.value.match(/eleicao\/(\d+)/i); if (m) $("cfgEle").value = m[1]; };
   $("btnAplicar").onclick = function () {
     cfg = { ele: String(int($("cfgEle").value) || 6258), ciclo: $("cfgCiclo").value.trim() };
-    ciclo = cfg.ciclo || null;
+    ciclo = cfg.ciclo || null; eleicoes = []; govEle = null;
     try { localStorage.setItem("apuracao-cfg2", JSON.stringify(cfg)); } catch (e) {}
-    brUlt = null; brAnt = {}; brGanho = {}; estados = {};
-    $("brCands").innerHTML = ""; renderEstados();
+    paineis = { br: novoPainel(), gov: novoPainel() }; estados = {};
+    $("brDuo").innerHTML = ""; $("esDuo").innerHTML = ""; renderEstados();
     atualizar();
   };
 

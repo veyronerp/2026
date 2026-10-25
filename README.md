@@ -1,11 +1,16 @@
 # Apuração 2026: app de celular em tempo real
 
-Mostra a apuração oficial do TSE para **Presidente** e **se atualiza sozinho a cada 10 segundos**:
+Tudo numa tela só do celular, atualizando sozinho a cada 10 segundos:
 
-- **Em cima, Brasil:** foto, porcentagem e votos de cada candidato (Lula em **vermelho**, Flávio em **azul**),
-  % de seções apuradas, vantagem em votos, comparecimento, abstenção, brancos e nulos.
-- **Embaixo, por estado:** os 27 estados + exterior, cada um com % apurado e a barra vermelho/azul com a
-  porcentagem de cada candidato. Dá para ordenar por A–Z, mais apurados ou maior eleitorado.
+- **Presidente, Brasil:** foto, porcentagem e votos de cada candidato (Lula em **vermelho**,
+  Flávio em **azul**), % de seções apuradas, quem está à frente e por quantos votos.
+- **Governador do Espírito Santo:** foto, porcentagem e votos dos candidatos. Se o ES não tiver
+  2º turno para governador, mostra o resultado do 1º turno com quem foi **eleito**.
+- **Presidente por estado:** os 27 estados + exterior em quadradinhos, cada um com % apurado e a
+  barra vermelho/azul com a porcentagem de cada candidato (ES em destaque). Ordena por A–Z,
+  % apurado ou nº de eleitores.
+
+Fotos: primeiro a foto oficial do TSE; se ela não carregar, a foto da Wikipédia (Lula e Flávio).
 
 Os dados são os mesmos arquivos que o site oficial usa (`resultados.tse.jus.br`), eleição **6258**.
 
