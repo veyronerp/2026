@@ -24,6 +24,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Diagnóstico do site do TSE
+        continue-on-error: true
+        run: python3 scripts/diagnostico_tse.py
+
       - name: Baixar fotos
         run: python3 scripts/baixar_fotos.py
 
