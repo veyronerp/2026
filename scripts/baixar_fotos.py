@@ -34,7 +34,16 @@ def eh_imagem(b):
 
 
 def resultado(ciclo, ele, uf, cargo):
-    return json_de("%s/oficial/%s/%d/dados-simplificados/%s/%s-c%04d-e%06d-r.json" % (TSE, ciclo, ele, uf, uf, cargo, ele))
+    """Lê o arquivo de resultados de 2026 e devolve {"cand": [...]} com todos os candidatos."""
+    d = json_de("%s/oficial/%s/%d/dados/%s/%s-c%04d-e%06d-u.json" % (TSE, ciclo, ele, uf, uf, cargo, ele))
+    cands = list(d.get("cand", []))
+    for cg in d.get("carg", []):
+        cands += cg.get("cand", [])
+        for ag in cg.get("agr", []):
+            cands += ag.get("cand", [])
+            for par in ag.get("par", []):
+                cands += par.get("cand", [])
+    return {"cand": [dict(c, nm=c.get("nmu") or c.get("nm", "")) for c in cands]}
 
 
 def main():
@@ -53,7 +62,7 @@ def main():
         for e in pl.get("e", []):
             if any(str(cp.get("cd")) == "3" for a in e.get("abr", []) for cp in a.get("cp", [])):
                 gov = [int(x) for x in (e.get("cdt2"), e.get("cd")) if str(x or "").isdigit()] + gov
-    gov = gov or [6260, 6259]
+    gov = list(dict.fromkeys(gov or [6260, 6259]))
     pres = [ELEICAO, ELEICAO - 1]
     print("ciclo:", ciclo, "| presidente:", pres, "| governador:", gov)
 

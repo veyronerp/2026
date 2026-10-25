@@ -223,7 +223,29 @@
   }
 
   function caminho(ele, uf, cargo) {
-    return "/oficial/" + ciclo + "/" + ele + "/dados-simplificados/" + uf + "/" + uf + "-c" + pad(cargo, 4) + "-e" + pad(ele, 6) + "-r.json";
+    return "/oficial/" + ciclo + "/" + ele + "/dados/" + uf + "/" + uf + "-c" + pad(cargo, 4) + "-e" + pad(ele, 6) + "-u.json";
+  }
+  function getResultado(ele, uf, cargo) { return getJSON(caminho(ele, uf, cargo)).then(plano); }
+
+  // Formato 2026 do TSE: candidatos dentro de carg[].agr[].par[].cand[], seções em "s" e eleitorado em "e".
+  // Converte para um formato simples usado pelo resto do app.
+  function plano(d) {
+    if (!d || d.cand) return d;
+    var s = d.s || {}, e = d.e || {};
+    var o = { t: d.t, dg: d.dg, hg: d.hg, s: s.ts, st: s.st, pst: s.pst, e: e.te, cand: [] };
+    function add(lista) {
+      (lista || []).forEach(function (c) {
+        o.cand.push({ sqcand: c.sqcand, n: c.n, nm: c.nmu || c.nm, st: c.st, e: c.e, vap: c.vap, pvap: c.pvap });
+      });
+    }
+    (d.carg || []).forEach(function (cg) {
+      add(cg.cand);
+      (cg.agr || []).forEach(function (ag) {
+        add(ag.cand);
+        (ag.par || []).forEach(function (p) { add(p.cand); });
+      });
+    });
+    return o;
   }
   function urlFoto(ele, uf, sq) { return (local ? "/tse" : TSE) + "/oficial/" + ciclo + "/" + ele + "/fotos/" + uf + "/" + sq + ".jpeg"; }
 
@@ -389,7 +411,7 @@
     function worker() {
       var uf = fila.shift();
       if (!uf) return Promise.resolve();
-      return getJSON(caminho(cfg.ele, uf, 1)).then(function (d) {
+      return getResultado(cfg.ele, uf, 1).then(function (d) {
         var cs = cands(d); cs.forEach(function (c) { c.cor = corPresidente(c); });
         estados[uf] = { pst: pct(d.pst), e: int(d.e), cs: cs };
       }, function () {
@@ -411,7 +433,7 @@
     function prox(k) {
       if (k >= tentativas.length) return Promise.reject(new Error("não encontrado"));
       var ele = tentativas[k];
-      return getJSON(caminho(ele, MEU_UF, 3)).then(function (d) {
+      return getResultado(ele, MEU_UF, 3).then(function (d) {
         if (!d.cand || !d.cand.length) throw new Error("vazio");
         return { ele: ele, d: d };
       }).catch(function () { return prox(k + 1); });
@@ -435,7 +457,7 @@
     buscando = true;
     $("status").textContent = "atualizando…";
     lerConfigTSE().then(function () {
-      var br = getJSON(caminho(cfg.ele, "br", 1)).then(function (d) {
+      var br = getResultado(cfg.ele, "br", 1).then(function (d) {
         $("brErro").classList.add("hidden");
         $("dot").className = "dot on";
         var cs = cands(d); cs.forEach(function (c) { c.cor = corPresidente(c); });

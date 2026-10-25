@@ -38,14 +38,30 @@ def baixar(caminho):
 def descobrir_ciclo(padrao="ele2026"):
     try:
         dados, _ = baixar("/oficial/comum/config/ele-c.json")
-        return json.loads(dados).get("c") or padrao
+        cfg = json.loads(dados)
+        return cfg.get("c") or next((pl["c"] for pl in cfg.get("pl", []) if pl.get("c")), padrao)
     except Exception:
         return padrao
 
 
 def caminho_resultado(ciclo, eleicao, uf, cargo):
-    return "/oficial/%s/%s/dados-simplificados/%s/%s-c%04d-e%06d-r.json" % (
+    return "/oficial/%s/%s/dados/%s/%s-c%04d-e%06d-u.json" % (
         ciclo, eleicao, uf, uf, int(cargo), int(eleicao))
+
+
+def plano(d):
+    """Converte o formato de 2026 (candidatos em carg/agr/par) para um formato simples."""
+    if "cand" in d:
+        return d
+    s, e, v = d.get("s", {}), d.get("e", {}), d.get("v", {})
+    o = {"t": d.get("t"), "dg": d.get("dg"), "hg": d.get("hg"), "s": s.get("ts"), "st": s.get("st"),
+         "pst": s.get("pst"), "pc": e.get("pc"), "pa": e.get("pa"), "pvb": v.get("pvb"), "ptvn": v.get("ptvn"), "cand": []}
+    for cg in d.get("carg", []):
+        grupos = [cg] + cg.get("agr", [])
+        grupos += [p for ag in cg.get("agr", []) for p in ag.get("par", [])]
+        for g in grupos:
+            o["cand"] += [dict(c, nm=c.get("nmu") or c.get("nm", "")) for c in g.get("cand", [])]
+    return o
 
 
 # ---------------------------------------------------------------- painel web
@@ -129,7 +145,7 @@ def terminal(args):
     while True:
         inicio = time.time()
         try:
-            d = json.loads(baixar(caminho)[0])
+            d = plano(json.loads(baixar(caminho)[0]))
             hora = (d.get("dg", ""), d.get("hg", ""), d.get("st"))
             cands = sorted(d.get("cand", []), key=lambda c: -num(c.get("vap")))
             if hora != ult_hora:

@@ -19,7 +19,10 @@ candidatos do TSE para a pasta `fotos/` a cada push e a cada 20 min nos dias 25 
 hora: Actions → Copiar fotos do TSE → **Run workflow**. O app usa essa cópia; se faltar, busca direto no
 TSE e, para Lula e Flávio, na Wikipédia. Fotos que falharem são tentadas de novo a cada minuto.
 
-Os dados são os mesmos arquivos que o site oficial usa (`resultados.tse.jus.br`), eleição **6258**.
+Os dados são os mesmos arquivos que o site oficial usa (`resultados.tse.jus.br`): Presidente 2º turno = eleição
+**6258**, Governador 2º turno = eleição **6260** (1º turno: 6257 e 6259). Formato 2026:
+`/oficial/ele2026/<eleição>/dados/<uf>/<uf>-c<cargo>-e<eleição>-u.json` e fotos em
+`/oficial/ele2026/<eleição>/fotos/<uf>/<sqcand>.jpeg`. O TSE libera a leitura direta (CORS) para `veyronerp.github.io`.
 
 ## Instalar no celular (sem senha, sem loja)
 
