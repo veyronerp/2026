@@ -1,0 +1,52 @@
+name: Copiar fotos do TSE
+
+# Baixa as fotos dos candidatos do TSE para a pasta fotos/, que o app usa.
+# Roda a cada push, manualmente (aba Actions) e a cada 20 min nos dias 25 e 26/10.
+on:
+  push:
+    paths-ignore: ["fotos/**"]
+  workflow_dispatch:
+  schedule:
+    - cron: "*/20 * 25,26 10 *"
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: fotos
+  cancel-in-progress: false
+
+jobs:
+  fotos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Baixar fotos
+        run: python3 scripts/baixar_fotos.py
+
+      - name: Salvar fotos novas
+        id: salvar
+        run: |
+          git add fotos
+          if git diff --cached --quiet; then
+            echo "Nenhuma foto nova."
+            echo "novas=0" >> "$GITHUB_OUTPUT"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Fotos dos candidatos copiadas do TSE"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+            echo "novas=1" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Republicar o site
+        if: steps.salvar.outputs.novas == '1'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl -sS -X POST -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds"

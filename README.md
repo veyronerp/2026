@@ -14,6 +14,11 @@ Tudo numa tela só do celular, atualizando sozinho a cada 10 segundos:
 Todos os números (votos, %, diferença) vêm exatamente dos arquivos oficiais do TSE. As fotos carregam
 separado e nunca atrasam a atualização dos números.
 
+**Fotos:** a automação *Copiar fotos do TSE* (aba **Actions** do GitHub) copia as fotos oficiais dos
+candidatos do TSE para a pasta `fotos/` a cada push e a cada 20 min nos dias 25 e 26/10. Para rodar na
+hora: Actions → Copiar fotos do TSE → **Run workflow**. O app usa essa cópia; se faltar, busca direto no
+TSE e, para Lula e Flávio, na Wikipédia. Fotos que falharem são tentadas de novo a cada minuto.
+
 Os dados são os mesmos arquivos que o site oficial usa (`resultados.tse.jus.br`), eleição **6258**.
 
 ## Instalar no celular (sem senha, sem loja)

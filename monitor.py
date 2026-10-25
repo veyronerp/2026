@@ -13,6 +13,7 @@ import argparse
 import http.server
 import json
 import os
+import re
 import sys
 import threading
 import time
@@ -58,7 +59,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             return self.proxy(self.path[len("/tse"):])
         if self.path in ("/", ""):
             self.path = "/index.html"
-        if self.path.split("?")[0] not in ARQUIVOS:
+        rota = self.path.split("?")[0]
+        if rota not in ARQUIVOS and not re.match(r"^/fotos/\d+\.jpg$", rota):
             return self.send_error(404)
         return super().do_GET()
 

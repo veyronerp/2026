@@ -273,9 +273,12 @@
   }
 
   // ---------------------------------------------------------------- fotos
-  // 1º foto oficial do TSE; se não carregar, foto da Wikipédia (Lula e Flávio); por fim, a inicial colorida.
-  var fotoAlt = {};   // sqcand -> url alternativa, "buscando", ou "x" = sem foto
-  var espera = {};    // sqcand -> imagens aguardando a busca na Wikipédia
+  // Ordem: cópia da foto do TSE guardada neste site (pasta fotos/), foto direto do TSE,
+  // foto da Wikipédia (Lula e Flávio) e, por fim, a inicial colorida. Fotos que falharem
+  // são tentadas de novo a cada minuto. As fotos nunca atrasam a atualização dos números.
+  var fotoOk = {};      // sqcand -> url que carregou
+  var fotoFalhou = {};  // sqcand -> hora da última falha
+  var wikiProm = {};    // sqcand -> busca da foto na Wikipédia
   function wikiTitulo(c) {
     var n = norm(c.nome);
     if (/^LULA/.test(n)) return "Luiz Inácio Lula da Silva";
@@ -284,34 +287,32 @@
   }
   function inicialHTML(c) { return '<div class="inicial">' + esc(apelido(c).charAt(0)) + "</div>"; }
   function fotoHTML(c, ele, uf) {
-    var alt = fotoAlt[c.sq];
-    if (alt === "buscando") alt = null;
-    if (alt === "x") return inicialHTML(c);
-    return '<img class="foto" alt="' + esc(apelido(c)) + '" src="' + esc(alt || urlFoto(ele, uf, c.sq)) + '" data-sq="' + esc(c.sq) +
-      '" data-wiki="' + esc(wikiTitulo(c)) + '" data-ini="' + esc(apelido(c).charAt(0)) + '" onerror="fotoErro(this)">';
+    if (!fotoOk[c.sq] && fotoFalhou[c.sq] && Date.now() - fotoFalhou[c.sq] < 60000) return inicialHTML(c);
+    var fontes = fotoOk[c.sq] ? [fotoOk[c.sq]] : ["fotos/" + c.sq + ".jpg", urlFoto(ele, uf, c.sq)];
+    return '<img class="foto" alt="' + esc(apelido(c)) + '" src="' + esc(fontes[0]) + '" data-sq="' + esc(c.sq) +
+      '" data-fontes="' + esc(fontes.join(" ")) + '" data-i="0" data-wiki="' + (fotoOk[c.sq] ? "" : esc(wikiTitulo(c))) +
+      '" data-ini="' + esc(apelido(c).charAt(0)) + '" onload="fotoCarregou(this)" onerror="fotoErro(this)">';
   }
+  window.fotoCarregou = function (img) { fotoOk[img.getAttribute("data-sq")] = img.src; };
   window.fotoErro = function (img) {
     var sq = img.getAttribute("data-sq"), w = img.getAttribute("data-wiki");
+    var fontes = img.getAttribute("data-fontes").split(" "), i = int(img.getAttribute("data-i")) + 1;
     function semFoto() {
-      fotoAlt[sq] = "x";
+      delete fotoOk[sq];
+      fotoFalhou[sq] = Date.now();
       var d = document.createElement("div"); d.className = "inicial"; d.textContent = img.getAttribute("data-ini");
       if (img.parentNode) img.parentNode.replaceChild(d, img);
     }
-    if (fotoAlt[sq] === "buscando") { (espera[sq] = espera[sq] || []).push(img); return; }
-    if (!w || fotoAlt[sq]) return semFoto();
-    fotoAlt[sq] = "buscando"; espera[sq] = [img];
-    fetch("https://pt.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(w.replace(/ /g, "_")))
-      .then(function (r) { return r.json(); })
-      .then(function (j) {
-        var u = j && (j.thumbnail && j.thumbnail.source || j.originalimage && j.originalimage.source);
-        if (!u) throw new Error("sem foto");
-        fotoAlt[sq] = u;
-        (espera[sq] || []).forEach(function (im) { im.setAttribute("data-wiki", ""); im.src = u; });
-        espera[sq] = [];
-      }).catch(function () {
-        (espera[sq] || []).forEach(function (im) { img = im; semFoto(); });
-        fotoAlt[sq] = "x"; espera[sq] = [];
-      });
+    if (i < fontes.length) { img.setAttribute("data-i", i); img.src = fontes[i]; return; }
+    if (!w) return semFoto();
+    img.setAttribute("data-wiki", "");
+    if (!wikiProm[sq]) {
+      wikiProm[sq] = fetch("https://pt.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(w.replace(/ /g, "_")))
+        .then(function (r) { return r.json(); })
+        .then(function (j) { return j && (j.thumbnail && j.thumbnail.source || j.originalimage && j.originalimage.source) || ""; })
+        .catch(function () { delete wikiProm[sq]; return ""; });
+    }
+    wikiProm[sq].then(function (u) { if (u) img.src = u; else semFoto(); });
   };
 
   // Desenha um painel com os dois principais candidatos (usado para Presidente e Governador).
