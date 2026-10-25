@@ -49,13 +49,14 @@
   .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 7px; }
   .c { display: flex; align-items: center; gap: 8px; min-width: 0; }
   .c.dir { flex-direction: row-reverse; text-align: right; }
-  .foto { width: var(--fs, 54px); height: var(--fs, 54px); border-radius: 50%; object-fit: cover; flex: none;
+  .duo { --fs: clamp(38px, 12vw, 54px); --ps: clamp(20px, 6.8vw, 30px); }
+  .foto { width: var(--fs); height: var(--fs); border-radius: 50%; object-fit: cover; flex: none;
     border: 3px solid var(--cor); background: var(--bar-bg); }
-  .inicial { width: var(--fs, 54px); height: var(--fs, 54px); border-radius: 50%; flex: none; display: grid; place-items: center;
+  .inicial { width: var(--fs); height: var(--fs); border-radius: 50%; flex: none; display: grid; place-items: center;
     background: var(--cor); color: #fff; font-size: 22px; font-weight: 700; }
-  .c .info { min-width: 0; }
+  .c .info { min-width: 0; flex: 1; }
   .c .nm { font-weight: 700; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .c .pc { font-size: var(--ps, 28px); font-weight: 800; color: var(--cor); font-variant-numeric: tabular-nums; line-height: 1.05; }
+  .c .pc { font-size: var(--ps); font-weight: 800; color: var(--cor); font-variant-numeric: tabular-nums; line-height: 1.05; }
   .c .vt { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
   .c .vt .g { color: var(--ok); }
   .selo { display: inline-block; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 6px;
@@ -63,11 +64,11 @@
   .split { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--bar-bg); margin-top: 7px; }
   .split > span { height: 100%; transition: width .6s; }
   .linha { display: flex; justify-content: space-between; gap: 6px; font-size: 12px; margin-top: 5px; flex-wrap: wrap; }
-  .gov { --fs: 42px; --ps: 22px; }
+  .gov .duo { --fs: clamp(32px, 10vw, 42px); --ps: clamp(18px, 5.8vw, 24px); }
 
   /* grade de estados */
   .ordem { display: flex; gap: 4px; }
-  .ordem button { font: inherit; font-size: 11px; padding: 2px 7px; border-radius: 10px; border: 1px solid var(--line);
+  .ordem button { white-space: nowrap; font: inherit; font-size: 11px; padding: 2px 7px; border-radius: 10px; border: 1px solid var(--line);
     background: var(--card); color: var(--muted); }
   .ordem button.sel { background: var(--text); color: var(--bg); border-color: var(--text); }
   .grade { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 7px; }
@@ -80,6 +81,8 @@
   .uf .split { height: 7px; margin-top: 3px; border-radius: 4px; }
   .uf .n { display: flex; justify-content: space-between; font-size: 11px; font-variant-numeric: tabular-nums; margin-top: 2px; }
   .uf .n .l { font-weight: 800; }
+  .uf .df { font-size: 10px; letter-spacing: -.2px; font-weight: 700; font-variant-numeric: tabular-nums; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .linha .dif { font-size: 15px; font-variant-numeric: tabular-nums; }
 
   .erro { color: var(--bad); font-size: 12px; margin-top: 4px; }
   .hidden { display: none !important; }
@@ -88,7 +91,7 @@
   .cfg label { font-size: 11px; color: var(--muted); display: grid; gap: 3px; }
   input { font: inherit; padding: 7px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); width: 100%; }
   .btn { font: inherit; font-size: 12px; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--text); }
-  @media (min-width: 560px) { .duo { --fs: 72px; --ps: 36px; } .gov { --fs: 54px; --ps: 28px; } }
+  @media (min-width: 560px) { .duo { --fs: 72px; --ps: 36px; } .gov .duo { --fs: 54px; --ps: 28px; } }
 </style>
 </head>
 <body>
@@ -120,8 +123,8 @@
 
   <!-- Presidente por estado -->
   <div class="card">
-    <div class="cab"><span class="t">Presidente por estado</span>
-      <div class="ordem" id="ordem"><button data-o="az" class="sel">A–Z</button><button data-o="apur">% apur.</button><button data-o="eleit">eleitores</button></div>
+    <div class="cab"><span class="t">Por estado <span style="text-transform:none;font-weight:400">+ = dif. votos</span></span>
+      <div class="ordem" id="ordem"><button data-o="az" class="sel">A–Z</button><button data-o="apur">%</button><button data-o="eleit">eleit.</button></div>
     </div>
     <div class="grade" id="estados"></div>
   </div>
@@ -263,6 +266,7 @@
     }).sort(function (a, b) { return int(a.n) - int(b.n); });
   }
   function lider(cs) { var l = null; cs.forEach(function (c) { if (c.votos > 0 && (!l || c.votos > l.votos)) l = c; }); return l; }
+  function difVotos(cs) { var r = porVotos(cs); return r.length >= 2 ? r[0].votos - r[1].votos : 0; }
   function porVotos(cs) { return cs.slice().sort(function (a, b) { return b.votos - a.votos; }); }
   function splitBar(cs) {
     return cs.map(function (c) { return '<span style="width:' + Math.max(0, c.pct) + '%;background:' + c.cor + '"></span>'; }).join("");
@@ -337,7 +341,8 @@
     }).join("") || '<div class="muted">Sem candidatos no arquivo.</div>';
     $(px + "Split").innerHTML = splitBar(cs);
     $(px + "Vant").innerHTML = rk.length >= 2 && rk[0].votos > 0
-      ? '<b style="color:' + rk[0].cor + '">' + esc(apelido(rk[0])) + "</b> +" + fmt(rk[0].votos - rk[1].votos) + " votos"
+      ? 'Diferença: <b class="dif" style="color:' + rk[0].cor + '">' + fmt(rk[0].votos - rk[1].votos) + " votos</b> p/ " +
+        '<b style="color:' + rk[0].cor + '">' + esc(apelido(rk[0])) + "</b>"
       : "";
     return l;
   }
@@ -351,11 +356,11 @@
       var d = x.d;
       var h = '<div class="uf' + (x.uf === MEU_UF ? " es" : "") + '" title="' + esc(x.nome) + '"><div class="t"><b>' + x.uf.toUpperCase() + "</b>" +
         "<span>" + (d ? fp(d.pst, 0) : (d === null ? "s/ dados" : "…")) + "</span></div>";
-      if (!d) return h + '<div class="split"></div><div class="n">&nbsp;</div></div>';
+      if (!d) return h + '<div class="split"></div><div class="n">&nbsp;</div><div class="df">&nbsp;</div></div>';
       var l = lider(d.cs), dois = d.cs.length > 2 ? porVotos(d.cs).slice(0, 2).sort(function (a, b) { return int(a.n) - int(b.n); }) : d.cs;
       return h + '<div class="split">' + splitBar(d.cs) + '</div><div class="n">' + dois.map(function (c) {
         return '<span class="' + (l === c ? "l" : "") + '" style="color:' + c.cor + '">' + fp(c.pct, 1).replace("%", "") + "</span>";
-      }).join("") + "</div></div>";
+      }).join("") + '</div><div class="df"' + (l ? ' style="color:' + l.cor + '">+' + fmt(difVotos(d.cs)) : ">&nbsp;") + "</div></div>";
     }).join("");
   }
 

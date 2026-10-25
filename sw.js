@@ -1,5 +1,5 @@
 // Guarda só os arquivos do app para abrir rápido. Os dados do TSE nunca ficam em cache.
-var CACHE = "apuracao-v3";
+var CACHE = "apuracao-v4";
 var APP = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-180.png"];
 
 self.addEventListener("install", function (e) {
