@@ -44,9 +44,18 @@ def main():
     except Exception as e:
         print("Não consegui ler a configuração do TSE:", e)
         cfg = {}
-    ciclo = cfg.get("c") or "ele%d" % ANO
-    eleicoes = [ELEICAO] + sorted({int(e["cd"]) for pl in cfg.get("pl", []) for e in pl.get("e", [])
-                                   if str(e.get("cd", "")).isdigit()} - {ELEICAO}, reverse=True) + [ELEICAO - 1]
+    ciclo = next((pl["c"] for pl in cfg.get("pl", []) for e in pl.get("e", [])
+                  if ELEICAO in (int(e.get("cd") or 0), int(e.get("cdt2") or 0)) and pl.get("c")), "ele%d" % ANO)
+    gov = []  # eleições com governador: 2º turno primeiro, depois 1º
+    for pl in cfg.get("pl", []):
+        if pl.get("c") != ciclo:
+            continue
+        for e in pl.get("e", []):
+            if any(str(cp.get("cd")) == "3" for a in e.get("abr", []) for cp in a.get("cp", [])):
+                gov = [int(x) for x in (e.get("cdt2"), e.get("cd")) if str(x or "").isdigit()] + gov
+    gov = gov or [6260, 6259]
+    pres = [ELEICAO, ELEICAO - 1]
+    print("ciclo:", ciclo, "| presidente:", pres, "| governador:", gov)
 
     # id da eleição no DivulgaCandContas (perfil dos candidatos), se disponível
     divulga_ids = []
@@ -58,7 +67,7 @@ def main():
         print("DivulgaCandContas indisponível:", e)
 
     alvos = []  # (sqcand, nome, eleicao, uf)
-    for uf, cargo, rotulo in (("br", 1, "Presidente"), ("es", 3, "Governador ES")):
+    for uf, cargo, rotulo, eleicoes in (("br", 1, "Presidente", pres), ("es", 3, "Governador ES", gov)):
         for ele in eleicoes:
             try:
                 d = resultado(ciclo, ele, uf, cargo)
@@ -77,7 +86,7 @@ def main():
         if os.path.exists(destino):
             continue
         urls = ["%s/oficial/%s/%d/fotos/%s/%s.%s" % (TSE, ciclo, e, uf, sq, ext)
-                for e in dict.fromkeys([ele] + eleicoes) for ext in ("jpeg", "jpg")]
+                for e in dict.fromkeys([ele] + pres + gov) for ext in ("jpeg", "jpg")]
         urls += ["%s/arquivo/img/%s/%s/%s" % (DIVULGA, i, sq, uf.upper()) for i in divulga_ids]
         for url in urls:
             try:

@@ -250,12 +250,27 @@
     return prox(0);
   }
 
+  // Lê a configuração do TSE: o ciclo (ex.: ele2026) fica em cada pleito, e o governador é uma
+  // eleição separada da de presidente (2026: presidente 6257/6258, governador 6259/6260).
   function lerConfigTSE() {
     if (ciclo && eleicoes.length) return Promise.resolve();
     return getJSON("/oficial/comum/config/ele-c.json").then(function (j) {
-      if (!ciclo) ciclo = (j && j.c) || "ele2026";
-      eleicoes = [];
-      (j.pl || []).forEach(function (pl) { (pl.e || []).forEach(function (e) { if (int(e.cd)) eleicoes.push(int(e.cd)); }); });
+      var gov1 = [], gov2 = [];
+      (j.pl || []).forEach(function (pl) {
+        (pl.e || []).forEach(function (e) {
+          if (int(e.cd) === int(cfg.ele) || int(e.cdt2) === int(cfg.ele)) { if (!cfg.ciclo && pl.c) ciclo = pl.c; }
+        });
+      });
+      if (!ciclo) ciclo = "ele2026";
+      (j.pl || []).forEach(function (pl) {
+        if (pl.c && pl.c !== ciclo) return;
+        (pl.e || []).forEach(function (e) {
+          var temGov = (e.abr || []).some(function (a) { return (a.cp || []).some(function (cp) { return String(cp.cd) === "3"; }); });
+          if (!temGov) return;
+          if (int(e.t) === 2) gov2.push(int(e.cd)); else { gov1.push(int(e.cd)); if (int(e.cdt2)) gov2.push(int(e.cdt2)); }
+        });
+      });
+      eleicoes = gov2.concat(gov1);
     }).catch(function () { if (!ciclo) ciclo = "ele2026"; });
   }
 
@@ -387,9 +402,8 @@
   // Tenta primeiro a eleição atual (2º turno). Se o ES não tiver 2º turno, procura nas outras
   // eleições do ciclo (1º turno) e mostra quem foi eleito.
   function buscarGov() {
-    var tentativas = govEle ? [govEle] : [int(cfg.ele)].concat(
-      eleicoes.filter(function (e) { return e !== int(cfg.ele); }).sort(function (a, b) { return b - a; }).slice(0, 4),
-      [int(cfg.ele) - 1]);
+    // 2º turno do governador primeiro; se o ES não tiver 2º turno, o 1º turno
+    var tentativas = govEle ? [govEle] : (eleicoes.length ? eleicoes : [6260, 6259]);
     tentativas = tentativas.filter(function (e, i, a) { return e > 0 && a.indexOf(e) === i; });
     function prox(k) {
       if (k >= tentativas.length) return Promise.reject(new Error("não encontrado"));
